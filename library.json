@@ -1,0 +1,23 @@
+{
+  "name": "Megaplexer-Lib",
+  "version": "0.1.0",
+  "description": "A library to interface with the Megaplexer display driver project.",
+  "keywords": "seven segment, display, multiplex, multiplexing",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/Sidpatchy/Megaplexer-Lib.git"
+  },
+  "authors":
+  [
+    {
+      "name": "Sidpatchy",
+      "email": "hello@sidpatchy.com",
+      "url": "https://www.sidpatchy.com/"
+    }
+  ],
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/Sidpatchy/Megaplexer-Lib/",
+  "frameworks": "*",
+  "platforms": "*"
+}
