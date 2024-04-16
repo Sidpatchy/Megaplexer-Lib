@@ -49,4 +49,4 @@ class MEGAPLEXER {
   void updateDigit(uint8_t digitIndex, int ascii, bool dpEnabled) const;      // DP enabled if true
 };
 
-#endif //DISPLAY_H
+#endif //MEGAPLEXER_H

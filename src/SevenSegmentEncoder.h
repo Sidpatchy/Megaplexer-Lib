@@ -29,8 +29,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef DECODER_H
-#define DECODER_H
+#ifndef ENCODER_H
+#define ENCODER_H
 
 #include <Arduino.h>
 
@@ -136,4 +136,4 @@ class ENCODER {
   byte getByteFromAscii(int ascii, bool dpEnabled);      // DP enabled if true
 };
 
-#endif //DECODER_H
+#endif //ENCODER_H
