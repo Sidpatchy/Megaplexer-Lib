@@ -34,10 +34,11 @@
 ENCODER encoder;
 
 /**
- * 
- * @param address 
+ * Constructor
+ *
+ * @param address the I2C address of the MCU running the Megaplexer project.
  */
-MEGAPLEXER::MEGAPLEXER(uint8_t address) {
+MEGAPLEXER::MEGAPLEXER(const uint8_t address) {
   i2c_address = address;
   encoder = new ENCODER();
 }
@@ -50,14 +51,28 @@ MEGAPLEXER::~MEGAPLEXER() {
 }
 
 /**
- * Method to handle communication with the Megaplexer. Allows for transmitting custom character definitions vs using
- * the predefined ones. This is ultimately called by all other signatures of this method.
+ * Method to handle communication with the Megaplexer. Allows for transmitting custom character definitions (vs using
+ * the predefined ones). This is ultimately called by all other signatures of this method.
  *
- * @param digitIndex Which digit to update, will cause an error on the slave MCU if greater than the number of digits.
+ * @param digitIndex Which digit to update, starting at 0, will cause an error on the slave MCU if greater than the number of digits.
  * @param segmentEncoding The pre-encoded data to display on the seven segment. DPgfedcba -> 0b00000000
  */
-void MEGAPLEXER::updateDigit(int digitIndex, byte segmentEncoding) {
+void MEGAPLEXER::updateDigitWithByte(const uint8_t digitIndex, const byte segmentEncoding) const {
+ const byte data[2] = {digitIndex, segmentEncoding};
 
+ // This should *probably* never fail, so I'm not super worried about it being blocking...
+ bool retry = true;
+ unsigned long lastRun = 0;
+ while (retry && millis() - lastRun > 100) {
+  lastRun = millis();
+  if (Wire.availableForWrite()) {
+   Wire.beginTransmission(i2c_address);
+   Wire.write(data, 2);
+   if (const uint8_t bytesTransmistted = Wire.endTransmission(); bytesTransmistted == 2) {
+    retry = false;
+   }
+  }
+ }
 }
 
 /**
@@ -66,7 +81,7 @@ void MEGAPLEXER::updateDigit(int digitIndex, byte segmentEncoding) {
  * @param digitIndex Which digit to update, will cause an error on the slave MCU if greater than the number of digits.
  * @param character The char to encode for.
  */
-void MEGAPLEXER::updateDigit(int digitIndex, char character) {
+void MEGAPLEXER::updateDigit(const uint8_t digitIndex, const char character) const {
  updateDigit(digitIndex, character, false);
 }
 
@@ -77,9 +92,9 @@ void MEGAPLEXER::updateDigit(int digitIndex, char character) {
  * @param character The char to encode for.
  * @param dpEnabled Whether the dot (assuming display is equiped) should be enabled.
  */
-void MEGAPLEXER::updateDigit(int digitIndex, char character, bool dpEnabled) {
- byte segmentEncoding = encoder->getByteFromChar(character, dpEnabled);
- updateDigit(digitIndex, segmentEncoding);
+void MEGAPLEXER::updateDigit(const uint8_t digitIndex, const char character, const bool dpEnabled) const {
+ const byte segmentEncoding = encoder->getByteFromChar(character, dpEnabled);
+ updateDigitWithByte(digitIndex, segmentEncoding);
 }
 
 /**
@@ -89,7 +104,7 @@ void MEGAPLEXER::updateDigit(int digitIndex, char character, bool dpEnabled) {
  * @param digitIndex Which digit to update, will cause an error on the slave MCU if greater than the number of digits.
  * @param ascii The ASCII value of the character to be displayed. Example: 65 would display A.
  */
-void MEGAPLEXER::updateDigit(int digitIndex, int ascii) {
+void MEGAPLEXER::updateDigit(const uint8_t digitIndex, const int ascii) const {
  updateDigit(digitIndex, ascii, false);
 }
 
@@ -101,7 +116,7 @@ void MEGAPLEXER::updateDigit(int digitIndex, int ascii) {
  * @param ascii The ASCII value of the character to be displayed. Example: 65 would display A.
  * @param dpEnabled Whether the dot (assuming display is equiped) should be enabled.
  */
-void MEGAPLEXER::updateDigit(int digitIndex, int ascii, bool dpEnabled) {
- byte segmentEncoding = encoder->getByteFromAscii(ascii, dpEnabled);
- updateDigit(digitIndex, segmentEncoding);
+void MEGAPLEXER::updateDigit(const uint8_t digitIndex, const int ascii, const bool dpEnabled) const {
+ const byte segmentEncoding = encoder->getByteFromAscii(ascii, dpEnabled);
+ updateDigitWithByte(digitIndex, segmentEncoding);
 }

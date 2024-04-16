@@ -42,11 +42,11 @@ class MEGAPLEXER {
   explicit MEGAPLEXER(uint8_t address);
   ~MEGAPLEXER();
 
-  void updateDigit(int digitIndex, byte segmentEncoding);
-  void updateDigit(int digitIndex, char character);                 // DP disabled
-  void updateDigit(int digitIndex, char character, bool dpEnabled); // DP enabled if true
-  void updateDigit(int digitIndex, int ascii);                      // DP disabled
-  void updateDigit(int digitIndex, int ascii, bool dpEnabled);      // DP enabled if true
+  void updateDigitWithByte(uint8_t digitIndex, byte segmentEncoding) const;
+  void updateDigit(uint8_t digitIndex, char character) const;                 // DP disabled
+  void updateDigit(uint8_t digitIndex, char character, bool dpEnabled) const; // DP enabled if true
+  void updateDigit(uint8_t digitIndex, int ascii) const;                      // DP disabled
+  void updateDigit(uint8_t digitIndex, int ascii, bool dpEnabled) const;      // DP enabled if true
 };
 
 #endif //DISPLAY_H
